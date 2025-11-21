@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="Azure.Identity" Version="1.13.1" />
+    <!-- Azure.AI.OpenAI: Using beta version as stable GA not yet available (Nov 2024) -->
     <PackageReference Include="Azure.AI.OpenAI" Version="1.0.0-beta.14" />
     <PackageReference Include="Azure.Search.Documents" Version="11.5.1" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.5" />

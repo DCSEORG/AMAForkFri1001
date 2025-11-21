@@ -22,7 +22,7 @@ public class DatabaseService
     public string? LastError => _lastError;
     public bool IsUsingDummyData => _useDummyData;
 
-    private SqlConnection GetConnection()
+    private async Task<SqlConnection> GetConnectionAsync()
     {
         var connectionString = _configuration.GetConnectionString("DefaultConnection");
         var managedIdentityClientId = _configuration["ManagedIdentityClientId"];
@@ -36,8 +36,8 @@ public class DatabaseService
             });
 
             var conn = new SqlConnection(connectionString);
-            var accessToken = credential.GetToken(new Azure.Core.TokenRequestContext(
-                new[] { "https://database.windows.net/.default" })).Token;
+            var accessToken = (await credential.GetTokenAsync(new Azure.Core.TokenRequestContext(
+                new[] { "https://database.windows.net/.default" }))).Token;
             conn.AccessToken = accessToken;
             return conn;
         }
@@ -70,7 +70,7 @@ public class DatabaseService
         return await ExecuteWithFallback(
             async () =>
             {
-                using var conn = GetConnection();
+                using var conn = await GetConnectionAsync();
                 await conn.OpenAsync();
 
                 var query = @"
@@ -141,7 +141,7 @@ public class DatabaseService
         return await ExecuteWithFallback(
             async () =>
             {
-                using var conn = GetConnection();
+                using var conn = await GetConnectionAsync();
                 await conn.OpenAsync();
 
                 var query = @"
@@ -172,7 +172,7 @@ public class DatabaseService
         return await ExecuteWithFallback(
             async () =>
             {
-                using var conn = GetConnection();
+                using var conn = await GetConnectionAsync();
                 await conn.OpenAsync();
 
                 var updates = new List<string>();
@@ -226,7 +226,7 @@ public class DatabaseService
         return await ExecuteWithFallback(
             async () =>
             {
-                using var conn = GetConnection();
+                using var conn = await GetConnectionAsync();
                 await conn.OpenAsync();
 
                 var query = @"
@@ -255,7 +255,7 @@ public class DatabaseService
         return await ExecuteWithFallback(
             async () =>
             {
-                using var conn = GetConnection();
+                using var conn = await GetConnectionAsync();
                 await conn.OpenAsync();
 
                 var query = "DELETE FROM dbo.Expenses WHERE ExpenseId = @ExpenseId AND StatusId = 1";
@@ -275,7 +275,7 @@ public class DatabaseService
         return await ExecuteWithFallback(
             async () =>
             {
-                using var conn = GetConnection();
+                using var conn = await GetConnectionAsync();
                 await conn.OpenAsync();
 
                 var query = @"
@@ -317,7 +317,7 @@ public class DatabaseService
         return await ExecuteWithFallback(
             async () =>
             {
-                using var conn = GetConnection();
+                using var conn = await GetConnectionAsync();
                 await conn.OpenAsync();
 
                 var query = "SELECT CategoryId, CategoryName, IsActive FROM dbo.ExpenseCategories WHERE IsActive = 1";
@@ -346,7 +346,7 @@ public class DatabaseService
         return await ExecuteWithFallback(
             async () =>
             {
-                using var conn = GetConnection();
+                using var conn = await GetConnectionAsync();
                 await conn.OpenAsync();
 
                 var query = "SELECT StatusId, StatusName FROM dbo.ExpenseStatus";
@@ -374,7 +374,7 @@ public class DatabaseService
         return await ExecuteWithFallback(
             async () =>
             {
-                using var conn = GetConnection();
+                using var conn = await GetConnectionAsync();
                 await conn.OpenAsync();
 
                 var query = @"
