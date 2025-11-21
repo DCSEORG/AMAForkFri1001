@@ -1,0 +1,75 @@
+@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+@if (Model.DbService.IsUsingDummyData)
+{
+    <div class="warning-banner">
+        <strong>⚠️ Database Connection Error</strong><br />
+        <small>@Model.DbService.LastError</small><br />
+        <small>Showing dummy data. Please check your database configuration and managed identity permissions.</small>
+    </div>
+}
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <h3>Total Expenses</h3>
+        <div class="value">@Model.Summary.TotalCount</div>
+        <small>£@Model.Summary.TotalAmount.ToString("N2")</small>
+    </div>
+    <div class="stat-card">
+        <h3>Pending</h3>
+        <div class="value">@Model.Summary.PendingCount</div>
+        <small>£@Model.Summary.PendingAmount.ToString("N2")</small>
+    </div>
+    <div class="stat-card">
+        <h3>Approved</h3>
+        <div class="value">@Model.Summary.ApprovedCount</div>
+        <small>£@Model.Summary.ApprovedAmount.ToString("N2")</small>
+    </div>
+</div>
+
+<div class="card">
+    <h2>Recent Expenses</h2>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Employee</th>
+                    <th>Category</th>
+                    <th>Amount</th>
+                    <th>Description</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var expense in Model.Expenses)
+                {
+                    <tr>
+                        <td>@expense.ExpenseDate.ToString("dd/MM/yyyy")</td>
+                        <td>@expense.UserName</td>
+                        <td>@expense.CategoryName</td>
+                        <td>£@expense.Amount.ToString("N2")</td>
+                        <td>@(expense.Description ?? "-")</td>
+                        <td>
+                            <span class="status-badge status-@expense.StatusName.ToLower()">
+                                @expense.StatusName
+                            </span>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="card">
+    <h2>Quick Actions</h2>
+    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+        <a href="/Chat" class="btn btn-primary">💬 Chat with AI Assistant</a>
+        <a href="/swagger" class="btn btn-secondary">📚 View API Documentation</a>
+    </div>
+</div>

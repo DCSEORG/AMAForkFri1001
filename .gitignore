@@ -1,0 +1,14 @@
+# Build artifacts
+app/bin/
+app/obj/
+app/publish/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Temporary files
+*.tmp
+.DS_Store
+
+# Note: app.zip is included in the repo for deployment
